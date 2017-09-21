@@ -69,7 +69,7 @@ like this:
     data_dir =
     output_dir =
     torrent_dir =
-    formats = flac, v0, 320, v2
+    formats = flac, v0, 320
     media = sacd, soundboard, web, dvd, cd, dat, vinyl, blu-ray
     24bit_behaviour = 0
 
@@ -79,7 +79,7 @@ like this:
 the value is blank, `data_dir` will be used.
 `torrent_dir` is the directory where torrents should be created (e.g.,
 your watch directory). `formats` is a list of formats that you'd like to
-support (so if you don't want to upload V2, just remove it from this
+support (so if you don't want to upload V0, just remove it from this
 list).
 `media` is a list of lossless media types you want to consider for
 transcoding. The default value is all Redacted lossless formats, but if
