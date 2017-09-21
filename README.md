@@ -63,7 +63,7 @@ You've made it far! Congratulations. Open up the file
 \~/.redbetter/config in a text editor. You're going to see something
 like this:
 
-    [whatcd]
+    [redacted]
     username =
     password =
     data_dir =
@@ -92,7 +92,7 @@ a prompt will appear. The default is '0' which ignores these occurrences.
 
 You should end up with something like this:
 
-    [whatcd]
+    [redacted]
     username = RequestBunny
     password = clapton
     data_dir = /srv/downloads
