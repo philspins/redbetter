@@ -79,6 +79,7 @@ def main():
         config.set('redacted', 'username', '')
         config.set('redacted', 'password', '')
         config.set('redacted', 'data_dir', '')
+        config.set('redacted', 'alt_data_dir', '')
         config.set('redacted', 'output_dir', '')
         config.set('redacted', 'torrent_dir', '')
         config.set('redacted', 'formats', 'flac, v0, 320')
@@ -92,6 +93,7 @@ def main():
         password = config.get('redacted', 'password')
         do_24_bit = config.get('redacted', '24bit_behaviour')
         data_dir = os.path.expanduser(config.get('redacted', 'data_dir'))
+        alt_data_dir = os.path.expanduser(config.get('redacted', 'alt_data_dir'))
         try:
             output_dir = os.path.expanduser(config.get('redacted', 'output_dir'))
         except ConfigParser.NoOptionError:
@@ -116,8 +118,8 @@ def main():
 
     upload_torrent = not args.no_upload
 
-    print 'Logging in to PTH...'
-    api = redapi.redapi(username, password)
+    print 'Logging in to RED...'
+    api = redapi.RedAPI(username, password)
 
     try:
         seen = pickle.load(open(args.cache))
@@ -149,11 +151,20 @@ def main():
 
         if not torrent['filePath']:
             flac_file = os.path.join(data_dir, redapi.unescape(torrent['fileList']).split('{{{')[0])
+            primary = true
             if not os.path.exists(flac_file):
-                print "Path not found - skipping: %s" % flac_file
+                print "Path not found - checking alternate directory"
+                flac_file = os.path.join(alt_data_dir, redapi.unescape(torrent['fileList']).split('{{{')[0])
+                primary = false
+            if not os.path.exists(flac_file):
+                print "Alternate path not found - skipping: %s" % flac_file
                 continue
-            flac_dir = os.path.join(data_dir, "%s (%s) [FLAC]" % (
-            redapi.unescape(group['group']['name']), group['group']['year']))
+            if primary:
+                flac_dir = os.path.join(data_dir, "%s (%s) [FLAC]" % (
+                redapi.unescape(group['group']['name']), group['group']['year']))
+            else:
+                flac_dir = os.path.join(alt_data_dir, "%s (%s) [FLAC]" % (
+                redapi.unescape(group['group']['name']), group['group']['year']))
             if not os.path.exists(flac_dir):
                 os.makedirs(flac_dir)
             shutil.copy(flac_file, flac_dir)

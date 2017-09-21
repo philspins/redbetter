@@ -67,6 +67,7 @@ like this:
     username =
     password =
     data_dir =
+    alt_data_dir =
     output_dir =
     torrent_dir =
     formats = flac, v0, 320
@@ -75,6 +76,8 @@ like this:
 
 `username` and `password` are your Redacted login credentials.
 `data_dir` is the directory where your downloads are stored.
+`alt_data_dir` is a second directory to check if a torrent isn't found in the
+primary data_dir.
 `output_dir` is the directory where your transcodes will be created. If
 the value is blank, `data_dir` will be used.
 `torrent_dir` is the directory where torrents should be created (e.g.,
@@ -96,7 +99,8 @@ You should end up with something like this:
     username = RequestBunny
     password = clapton
     data_dir = /srv/downloads
-    output_dir =
+    alt_data_dir = /srv/linked_folders
+    output_dir = /srv/transcodes
     torrent_dir = /srv/torrents
     formats = flac, v0, 320
     media = cd, vinyl, web
@@ -108,19 +112,21 @@ Usage
 -----
 
     usage: redbetter [-h] [-s] [--config CONFIG] [--cache CACHE]
-                      [release_urls [release_urls ...]]
+                     [release_urls [release_urls ...]]
 
     positional arguments:
-      release_urls     the URL where the release is located
+      release_urls        the URL where the release is located
 
     optional arguments:
-      -h, --help       show this help message and exit
-      -s, --single     only add one format per release (useful for getting unique
-                       groups)
-      --config CONFIG  the location of the configuration file (default:
-                       ~/.redbetter/config)
-      --cache CACHE    the location of the cache (default: ~/.redbetter/cache)
-
+      -h, --help          show this help message and exit
+      -s, --single        only add one format per release (useful for getting unique
+                          groups)
+      --config CONFIG     the location of the configuration file (default:
+                          ~/.redbetter/config)
+      --cache CACHE       the location of the cache (default: ~/.redbetter/cache)
+      -u --uploads        search uploaded torrents instead of snatched
+      -U --no-upload      don\'t upload new torrents (in case you want to do it manually)
+      -E --no-24bit-edit  don\'t try to edit 24-bit torrents mistakenly labeled as 16-bit'
 Examples
 --------
 
