@@ -44,10 +44,6 @@ formats = {
         'format' : 'MP3',
         'encoding' : '320'
     },
-    'V2': {
-        'format' : 'MP3',
-        'encoding' : 'V2 (VBR)'
-    },
 }
 
 def allowed_transcodes(torrent):

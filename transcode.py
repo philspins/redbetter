@@ -98,8 +98,11 @@ def is_multichannel(flac_dir):
     '''
     Returns True if any FLAC within flac_dir is multichannel.
     '''
-    flacs = (mutagen.flac.FLAC(flac_file) for flac_file in locate(flac_dir, ext_matcher('.flac')))
-    return any(flac.info.channels > 2 for flac in flacs)
+    try:
+        flacs = (mutagen.flac.FLAC(flac_file) for flac_file in locate(flac_dir, ext_matcher('.flac')))
+        return any(flac.info.channels > 2 for flac in flacs)
+    except Exception as e:
+        return True
 
 def needs_resampling(flac_dir):
     '''
@@ -220,7 +223,7 @@ def transcode(flac_file, output_dir, output_format):
         raise TranscodeException('Transcode of file "%s" failed: SIGPIPE' % flac_file)
 
     tagging.copy_tags(flac_file, transcode_file)
-    (ok, msg) = tagging.check_tags(transcode_file)
+    (ok, msg) = tagging.check_tags(transcode_file, False)
     if not ok:
         raise TranscodeException('Tag check failed on transcoded file: %s' % msg)
 

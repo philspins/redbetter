@@ -16,8 +16,7 @@ from _version import __version__
 
 
 def banner():
-    return 'Created with version of redbetter 1.0. Maintained by philspins\n' \
-           'This transcoding was done by an autonomous system'
+    return 'This transcoding was done by an autonomous system'
 
 def create_description(torrent, flac_dir, format, permalink):
     # Create an example command to document the transcode process.
@@ -133,10 +132,10 @@ def main():
         candidates = [(int(query['id']), int(query['torrentid'])) for query in\
                 [dict(urlparse.parse_qsl(urlparse.urlparse(url).query)) for url in args.release_urls]]
     else:
-	if args.uploads:
-		candidates = api.uploaded(skip=seen, media=supported_media)
+    	if args.uploads:
+    		candidates = api.uploaded(skip=seen, media=supported_media)
         else:
-                candidates = api.snatched(skip=seen, media=supported_media)
+            candidates = api.snatched(skip=seen, media=supported_media)
 
     for groupid, torrentid in candidates:
         group = api.request('torrentgroup', id=groupid)
@@ -153,11 +152,11 @@ def main():
             flac_file = os.path.join(data_dir, redapi.unescape(torrent['fileList']).split('{{{')[0])
             primary = true
             if not os.path.exists(flac_file):
-                print "Path not found - checking alternate directory"
+                print "Path not found: checking alternate directory..."
                 flac_file = os.path.join(alt_data_dir, redapi.unescape(torrent['fileList']).split('{{{')[0])
                 primary = false
             if not os.path.exists(flac_file):
-                print "Alternate path not found - skipping: %s" % flac_file
+                print "Alternate path not found: skipping torrent"
                 continue
             if primary:
                 flac_dir = os.path.join(data_dir, "%s (%s) [FLAC]" % (
@@ -167,11 +166,20 @@ def main():
                 redapi.unescape(group['group']['name']), group['group']['year']))
             if not os.path.exists(flac_dir):
                 os.makedirs(flac_dir)
+            print "Using path: %s" % flac_dir
             shutil.copy(flac_file, flac_dir)
         else:
             flac_dir = os.path.join(data_dir, redapi.unescape(torrent['filePath']))
+            if not os.path.exists(flac_dir):
+                print "Path not found: checking alternate directory..."
+                flac_dir = os.path.join(alt_data_dir, redapi.unescape(torrent['filePath']))
+            if not os.path.exists(flac_dir):
+                print "Alternate path not found: skipping torrent"
+                continue
+            print "Using path: %s" % flac_dir
 
         flac_dir = flac_dir.encode(sys.getfilesystemencoding())
+
         if int(do_24_bit):
             try:
                 if transcode.is_24bit(flac_dir) and torrent['encoding'] != '24bit Lossless':
@@ -238,7 +246,7 @@ def main():
                 finally:
                     shutil.rmtree(tmpdir)
             else:
-                print "Path not found - skipping: %s" % flac_dir
+                print "Path not found (%s): skipping" % flac_dir
                 break
 
         seen.add(str(torrentid))
